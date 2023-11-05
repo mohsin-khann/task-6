@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Library System</title>
+
+    <!-- Add Bootstrap CSS link here -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to right, #415e40, rgb(167, 255, 171)); 
+        }
+
+.top {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  width: 100%;
+ 
+  padding: 20px 0;
+  text-align: center;
+  background: linear-gradient(to right, #00bb48, #3d3939c2); 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+   margin-top:0%;
+}
+
+
+      
+
+        .container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  margin-top: 3%; /* Reduce the margin for top spacing */
+}
+
+@media (max-width: 768px) {
+  .container {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+.left, .right, .add-book {
+  width: 100%;
+  padding: 10px;
+  background-color: rgb(81, 150, 107);
+  border: 5px solid #11051898;
+  border-radius: 0px;
+  box-sizing: border-box;
+  margin: 0px;
+  font-size: 16px;
+  
+}
+
+input[type="text"] {
+  width: 100%;
+  padding: 10px;
+  margin: 10px 0;
+  border: 1px solid #0a090a;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+input[type="submit"] {
+  background-color: #00a740;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+  width: 50%;
+  border-radius: 5px;
+}
+
+input[type="submit"]:hover {
+  background-color: #474547;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin: 5px 0;
+}
+
+@media (max-width: 768px) {
+  .left, .right, .add-book {
+    font-size: 14px;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+    <div class="top">
+        <h2>ONLINE LIBRARY MANAGEMENT SYSTEM:</h2>
+    </div>
+    <br><br><br>
+    <br>
+    <br>
+    <br>
+    <br>
+    
+
+<div class="container">
+        <div class="left">
+            <h2>Story Book List:</h2>
+            <ul>
+                <li>1:Travel with us.</li>
+                <li>2: 50 day of summer.</li>
+                <li>3: Atomic habits.</li>
+                <li>4: Reclaim your heart.</li>
+            </ul>
+        </div>
+<br>
+        <div class="add-book">
+            <h2>Add New Story Book:</h2>
+            <form id="addBookForm">
+                <input type="text" name="title" id="title" placeholder="Title">
+                <input type="text" name="author" id="author" placeholder="Author">
+                <input type="text" name="isbn" id="isbn" placeholder="ISBN">
+                <input type="submit" value="Add Book">
+            </form>
+        </div>
+        <br>
+
+        <div class="right">
+            <h2>Search FOr Story Book:</h2>
+            <form id="searchForm">
+                <input type="text" name="search" id="search" placeholder="Search...">
+                <input type="submit" value="Search">
+            </form>
+            <p id="searchResult"></p>
+        </div>
+    </div>
+    <br>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.5.0/dist/js/bootstrap.min.js"></script>
+
+    <script>
+        const bookList = document.querySelector(".left ul");
+        const addBookForm = document.querySelector("#addBookForm");
+        const titleInput = document.querySelector("#title");
+        const authorInput = document.querySelector("#author");
+        const isbnInput = document.querySelector("#isbn");
+        const searchInput = document.querySelector("#search");
+
+      addBookForm.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const newTitle = titleInput.value;
+    const newAuthor = authorInput.value;
+    const newIsbn = isbnInput.value;
+
+    if (!newTitle || !newAuthor || !newIsbn) {
+        alert("Please fill in all fields.");
+        return;
+    }
+
+    const existingBooks = [...bookList.getElementsByTagName("li")];
+    const isDuplicate = existingBooks.some(book => {
+        return book.textContent.includes(newTitle);
+    });
+
+    if (isDuplicate) {
+        alert("This book title already exists in the list.");
+        return;
+    }
+
+    const newBookItem = document.createElement("li");
+    newBookItem.innerHTML = `<b>Title:</b> ${newTitle}, <b>Author:</b> ${newAuthor}, <b>ISBN:</b> ${newIsbn}`;
+    bookList.appendChild(newBookItem);
+
+    titleInput.value = "";
+    authorInput.value = "";
+    isbnInput.value = "";
+});
+
+
+        document.querySelector("#searchForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const searchTerm = searchInput.value.toLowerCase();
+
+            const books = [...bookList.getElementsByTagName("li")];
+            let bookFound = false;
+
+            books.forEach(book => {
+                const title = book.textContent.toLowerCase();
+                if (title.includes(searchTerm)) {
+                    book.style.display = "block";
+                    bookFound = true;
+                } else {
+                    book.style.display = "none";
+                }
+            });
+            
+
+            const searchResult = document.querySelector("#searchResult");
+            if (bookFound) {
+                searchResult.textContent = "Book found!";
+            } else {
+                searchResult.textContent = "Book not found.";
+            }
+        });
+    </script>
+</body>
+</html>
